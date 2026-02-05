@@ -14,21 +14,9 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: transparent;
             min-height: 100vh;
             overflow: hidden;
-        }
-
-        .info {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            font-size: 14px;
-            color: #666;
         }
 
         .content {
@@ -42,8 +30,6 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 200px;
-            height: 300px;
             pointer-events: none;
             opacity: 0;
         }
@@ -59,9 +45,9 @@
 
         .cursor {
             position: fixed;
-            width: 20px;
-            height: 20px;
-            border: 2px solid white;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #333;
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
@@ -71,23 +57,19 @@
     </style>
 </head>
 <body>
-    <div class="info">
-        👆 Bewege deine Maus, um Bilder zu erzeugen
-    </div>
-
     <div class="content" id="container"></div>
     <div class="cursor" id="cursor"></div>
 
     <script>
-        // DEINE BILDER - Passe die Pfade an deine Ordnerstruktur an
         const images = [
-            'images/C0040 (18-55-08-16)d.jpg',
-            'images/hf_20260116_094959_115a9fc0-4089-46bf-8561-1e41f1235f73.jpg',
-            'images/kl.jpg',
-            'images/u9488714862_httpss-mj-run6KoRSJOz3Gg_vogue_model_in_a_cl.jpg'
+            { src: 'images/001.jpg', aspectRatio: 9/16 },
+            { src: 'images/002.jpg', aspectRatio: 3/4 },
+            { src: 'images/003.jpg', aspectRatio: 9/16 },
+            { src: 'images/004.jpg', aspectRatio: 3/4 },
+            { src: 'images/006.jpg', aspectRatio: 3/4 },
+            { src: 'images/007.jpg', aspectRatio: 1/1 }
         ];
 
-        // Utility Functions
         function lerp(a, b, n) {
             return (1 - n) * a + n * b;
         }
@@ -113,14 +95,12 @@
             return Math.hypot(dx, dy);
         }
 
-        // Custom Cursor
         const cursor = document.getElementById('cursor');
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // Image Item Class
         class ImageItem {
             constructor(el) {
                 this.DOM = { el: el, inner: el.querySelector('.content__img-inner') };
@@ -136,7 +116,6 @@
             }
         }
 
-        // Image Trail Class
         class ImageTrailBase {
             constructor(container) {
                 this.container = container;
@@ -191,27 +170,43 @@
 
                 gsap.timeline({
                     onStart: () => { this.activeImagesCount++; this.isIdle = false; },
-                    onComplete: () => { this.activeImagesCount--; if (this.activeImagesCount === 0) this.isIdle = true; }
+                    onComplete: () => { 
+                        this.activeImagesCount--; 
+                        if (this.activeImagesCount === 0) this.isIdle = true;
+                    }
                 })
                 .fromTo(img.DOM.el, {
                     opacity: 1, scale: 1, zIndex: this.zIndexVal,
                     x: this.cacheMousePos.x - img.rect.width / 2,
                     y: this.cacheMousePos.y - img.rect.height / 2
                 }, {
-                    duration: 0.4, ease: 'power1',
+                    duration: 0.6,
+                    ease: 'power1',
                     x: this.mousePos.x - img.rect.width / 2,
                     y: this.mousePos.y - img.rect.height / 2
                 }, 0)
-                .to(img.DOM.el, { duration: 0.4, ease: 'power3', opacity: 0, scale: 0.2 }, 0.4);
+                .to(img.DOM.el, { 
+                    duration: 0.8, 
+                    ease: 'power3', 
+                    opacity: 0, 
+                    scale: 0.2 
+                }, 1.2);
             }
         }
 
-        // Initialize
         const container = document.getElementById('container');
-        images.forEach(url => {
+        const baseHeight = 240;
+        
+        images.forEach(item => {
             const div = document.createElement('div');
             div.className = 'content__img';
-            div.innerHTML = `<div class="content__img-inner" style="background-image: url(${url})"></div>`;
+            
+            const width = baseHeight * item.aspectRatio;
+            div.style.width = width + 'px';
+            div.style.height = baseHeight + 'px';
+            
+            div.innerHTML = `<div class="content__img-inner" style="background-image: url(${item.src})"></div>`;
+            
             container.appendChild(div);
         });
 
