@@ -214,3 +214,17 @@
     </script>
 </body>
 </html>
+            
+            const width = baseHeight * item.aspectRatio;
+            div.style.width = width + 'px';
+            div.style.height = baseHeight + 'px';
+            
+            div.innerHTML = `<div class="content__img-inner" style="background-image: url(${item.src})"></div>`;
+            
+            container.appendChild(div);
+        });
+
+        let currentTrail = new ImageTrailBase(container);
+    </script>
+</body>
+</html>
