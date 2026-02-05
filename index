@@ -195,7 +195,7 @@
         }
 
         const container = document.getElementById('container');
-        const baseHeight = 240;
+        const baseHeight = 200;
         
         images.forEach(item => {
             const div = document.createElement('div');
