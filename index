@@ -14,7 +14,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000;
+            background: transparent;
             min-height: 100vh;
             overflow: hidden;
         }
@@ -62,12 +62,12 @@
 
     <script>
         const images = [
-            { src: 'images/001.jpg', aspectRatio: 9/16 },
-            { src: 'images/002.jpg', aspectRatio: 3/4 },
-            { src: 'images/003.jpg', aspectRatio: 9/16 },
-            { src: 'images/004.jpg', aspectRatio: 3/4 },
-            { src: 'images/006.jpg', aspectRatio: 3/4 },
-            { src: 'images/007.jpg', aspectRatio: 1/1 }
+            { type: 'image', src: 'images/001.jpg', aspectRatio: 9/16 },
+            { type: 'image', src: 'images/002.jpg', aspectRatio: 3/4 },
+            { type: 'image', src: 'images/003.jpg', aspectRatio: 9/16 },
+            { type: 'image', src: 'images/004.jpg', aspectRatio: 3/4 },
+            { type: 'image', src: 'images/006.jpg', aspectRatio: 3/4 },
+            { type: 'image', src: 'images/007.jpg', aspectRatio: 1/1 }
         ];
 
         function lerp(a, b, n) {
@@ -205,21 +205,11 @@
             div.style.width = width + 'px';
             div.style.height = baseHeight + 'px';
             
-            div.innerHTML = `<div class="content__img-inner" style="background-image: url(${item.src})"></div>`;
-            
-            container.appendChild(div);
-        });
-
-        let currentTrail = new ImageTrailBase(container);
-    </script>
-</body>
-</html>
-            
-            const width = baseHeight * item.aspectRatio;
-            div.style.width = width + 'px';
-            div.style.height = baseHeight + 'px';
-            
-            div.innerHTML = `<div class="content__img-inner" style="background-image: url(${item.src})"></div>`;
+            if (item.type === 'video') {
+                div.innerHTML = `<div class="content__img-inner"><video src="${item.src}" muted loop></video></div>`;
+            } else {
+                div.innerHTML = `<div class="content__img-inner" style="background-image: url(${item.src})"></div>`;
+            }
             
             container.appendChild(div);
         });
